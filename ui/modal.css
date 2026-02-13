@@ -1,0 +1,335 @@
+/* ===============================
+   Overlay
+   =============================== */
+
+#snql-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(40, 50, 70, 0.12);
+    z-index: 99998;
+}
+
+
+/* ===============================
+   Modal shell
+   =============================== */
+
+#snql-modal {
+    position: fixed;
+    top: 20vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 420px;
+    background: #f8f9fb;
+    border-radius: 10px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+    font-family: Consolas, Menlo, monospace;
+    z-index: 99999;
+    padding: 14px;
+}
+
+#snql-modal .header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+#snql-modal .footer {
+    margin-top: 8px;
+    font-size: 11px;
+    color: #666;
+}
+
+
+/* ===============================
+   Editor container
+   =============================== */
+
+.snql-editor {
+    position: relative;
+    font-family: Consolas, Monaco, monospace;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+
+/* ===============================
+   Highlight layer (VISIBLE)
+   =============================== */
+
+.snql-highlight {
+    position: absolute;
+    inset: 0;
+    padding: 7px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    color: #222;              /* ✅ must be visible */
+    pointer-events: none;
+    z-index: 1;
+}
+
+
+/* ===============================
+   Textarea (INPUT ONLY)
+   =============================== */
+
+.snql-input {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 90px;
+    padding: 7px;
+    background: transparent;
+    color: transparent;      /* hide raw text */
+    caret-color: #000;       /* show cursor */
+    resize: none;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+
+/* ===============================
+   Syntax colors
+   =============================== */
+
+.snql-highlight .kw {
+    color: #6b91fd;
+    font-weight: 600;
+}
+
+.snql-highlight .op {
+    color: #9a6cff;
+}
+
+.snql-highlight .str {
+    color: #2aa876;
+}
+
+.snql-highlight .num {
+    color: #e08d00;
+}
+
+.snql-highlight .paren {
+    color: #999;
+}
+
+.snql-highlight .ident {
+    color: #222;
+}
+
+.snql-highlight .err {
+    color: #c62828;
+    text-decoration: underline;
+    text-decoration-color: #c62828;
+    text-decoration-style: wavy;
+}
+
+.snql-autocomplete {
+    position: absolute;
+    z-index: 100000;
+    background: #ffffff;
+    color: #222;
+    border: 1px solid #d0d4dc;
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.18);
+    font-size: 12px;
+    max-height: 160px;
+    overflow-y: auto;
+    min-width: 160px;
+}
+
+.snql-autocomplete li.active {
+    background: #e8f0ff;
+    color: #000;
+}
+
+.snql-autocomplete ul {
+    list-style: none;
+    margin: 0;
+    padding: 4px 0;
+}
+
+.snql-autocomplete li {
+    padding: 4px 10px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+/* ===============================
+   Autocomplete item layout
+   =============================== */
+
+.snql-autocomplete li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* main label (human readable) */
+.snql-item-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+/* metadata row */
+.snql-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    opacity: 0.85;
+}
+
+/* [internal_name] */
+.snql-meta-name {
+    color: #6b7280;
+    font-family: Consolas, Menlo, monospace;
+}
+
+/* ===============================
+   Type pills
+   =============================== */
+
+.snql-type {
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: lowercase;
+    line-height: 1.4;
+}
+
+/* reference */
+.snql-type-reference {
+    background: #e8f0ff;
+    color: #2f5cff;
+}
+
+/* string */
+.snql-type-string {
+    background: #e6f7ef;
+    color: #1b8f5a;
+}
+
+/* integer / number */
+.snql-type-integer,
+.snql-type-number {
+    background: #fff3e0;
+    color: #c77800;
+}
+
+/* boolean */
+.snql-type-boolean {
+    background: #f3e8ff;
+    color: #7c3aed;
+}
+
+/* date / datetime */
+.snql-type-glide_date_time,
+.snql-type-due_date {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+/* list */
+.snql-type-glide_list {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+/* ===============================
+   Reference target
+   =============================== */
+
+.snql-ref {
+    color: #9aa4b2;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+/* ===============================
+   Active / hover state
+   =============================== */
+
+.snql-autocomplete li.active {
+    background: #eef3ff;
+}
+
+.snql-autocomplete li.active .snql-item-label {
+    color: #1d4ed8;
+}
+
+.snql-loading {
+    padding: 8px 10px;
+    font-style: italic;
+    opacity: 0.7;
+}
+
+.snql-macro {
+    margin-left: 6px;
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-size: 10px;
+    background: #3b82f6;
+    color: white;
+}
+
+.snql-item-desc {
+    font-size: 11px;
+    color: #9ca3af;
+    margin-left: 8px;
+}
+
+.snql-highlight .macro {
+    background: rgba(59, 130, 246, 0.18);
+    color: #1d4ed8;
+    border-radius: 4px;
+
+    padding: 0;
+    margin: 0;
+    font-size: inherit;
+    line-height: inherit;
+    font-family: inherit;
+
+    box-shadow: inset 0 -1px 0 rgba(29, 78, 216, 0.35);
+}
+
+.snql-history {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    width: 100%;
+    margin-bottom: 6px;
+
+    background: #ffffff;
+    border: 1px solid #d0d4dc;
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.18);
+
+    font-size: 12px;
+    max-height: 180px;
+    overflow-y: auto;
+    z-index: 100000;
+}
+
+.snql-history ul {
+    list-style: none;
+    margin: 0;
+    padding: 4px 0;
+}
+
+.snql-history li {
+    padding: 6px 10px;
+    cursor: pointer;
+    white-space: pre-wrap;
+    font-family: inherit;
+}
+
+.snql-history li.active {
+    background: #eef3ff;
+}

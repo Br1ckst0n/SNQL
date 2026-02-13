@@ -1,0 +1,1 @@
+window.SNQL = window.SNQL || {};

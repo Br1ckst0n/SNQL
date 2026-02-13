@@ -1,0 +1,46 @@
+{
+    "manifest_version": 3,
+    "name": "SNQL",
+    "version": "0.1.0",
+    "background": {
+        "service_worker": "background.js"
+    },
+    "commands": {
+        "open-snql": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+Period",
+                "mac": "Command+Shift+Period"
+            },
+            "description": "Open SNQL modal"
+        }
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://*.service-now.com/*"
+            ],
+            "js": [
+                "content/content.js"
+            ],
+            "all_frames": true
+        }
+    ],
+    "host_permissions": [
+        "https://*.service-now.com/*"
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "autocomplete/*.js",
+                "content/*.js",
+                "core/*.js",
+                "services/*.js",
+                "ui/*",
+                "utils/*.js"
+            ],
+            "matches": [
+                "https://*.service-now.com/*"
+            ]
+        }
+    ]
+}
