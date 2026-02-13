@@ -27,6 +27,12 @@ SNQL.autocompleteView = (function () {
     }
 
     async function update() {
+
+        if (SNQL.historyNav?.isNavigating?.()) {
+            hide();
+            return;
+        }
+
         const suggestions = await SNQL.autocomplete.getSuggestions();
         if (!suggestions || !suggestions.length) {
             hide();
@@ -202,6 +208,14 @@ SNQL.autocompleteView = (function () {
         visible = false;
     }
 
-    return { init };
+   function isOpen() {
+        if (!box) return false;
+        return window.getComputedStyle(box).display !== "none";
+    }
+
+    return {
+        init,
+        isOpen
+    };
 
 })();

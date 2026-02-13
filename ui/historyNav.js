@@ -6,6 +6,7 @@ SNQL.historyNav = (function () {
     let index = null;
     let draft = "";
     let internalUpdate = false;
+    let navigating = false;
 
     function init(textarea) {
         input = textarea;
@@ -16,13 +17,25 @@ SNQL.historyNav = (function () {
 
     function onKey(e) {
 
+        if (e.key !== "ArrowUp" && e.key !== "ArrowDown") {
+            return;
+        }
+
+        if (e.ctrlKey || e.metaKey || e.altKey) {
+            return;
+        }
+
+        if (SNQL.autocompleteView?.isOpen?.()) {
+            return;
+        }
+
+        e.preventDefault();
+
         if (e.key === "ArrowUp") {
-            e.preventDefault();
             navigateUp();
         }
 
         if (e.key === "ArrowDown") {
-            e.preventDefault();
             navigateDown();
         }
     }
@@ -33,8 +46,8 @@ SNQL.historyNav = (function () {
         if (!entries.length) return false;
 
         draft = input.value;
-
         index = -1;
+        navigating = true;
 
         return true;
     }
@@ -65,6 +78,7 @@ SNQL.historyNav = (function () {
 
     function exitNavigation() {
         index = null;
+        navigating = false;
         apply(draft);
     }
 
@@ -85,8 +99,13 @@ SNQL.historyNav = (function () {
         if (internalUpdate) return;
 
         index = null;
+        navigating = false;
     }
 
-    return { init };
+    function isNavigating() {
+        return navigating;
+    }
+
+    return { init, isNavigating };
 
 })();
