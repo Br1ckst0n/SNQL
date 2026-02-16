@@ -50,11 +50,22 @@ SNQL.metadata = (function () {
     }
 
     function init({ url, token }) {
+
         instanceUrl = url ? url.replace(/\/$/, "") : null;
         g_ck = token || null;
 
-        getTables().catch(() => {});
+        if (!isAuthenticated()) {
+            SNQL.status.set("offline");
+            return;
+        }
+
+        SNQL.status.set("initializing");
+
+        getTables()
+            .then(() => SNQL.status.set("ready"))
+            .catch(() => SNQL.status.set("error"));
     }
+
 
     function isAuthenticated() {
         return !!(instanceUrl && g_ck);

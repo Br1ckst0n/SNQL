@@ -31,6 +31,8 @@
 #snql-modal .header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    gap: 8px;
     font-size: 13px;
     margin-bottom: 8px;
 }
@@ -332,4 +334,41 @@
 
 .snql-history li.active {
     background: #eef3ff;
+}
+
+.snql-status {
+    margin-left: auto;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.snql-status[data-state="idle"] {
+    background: #888;
+}
+
+.snql-status[data-state="initializing"] {
+    background: #f0ad4e;
+    box-shadow: 0 0 6px rgba(240,173,78,0.7);
+    animation: snql-pulse 1.2s infinite ease-in-out;
+}
+
+.snql-status[data-state="ready"] {
+    background: #28a745;
+    box-shadow: 0 0 6px rgba(40,167,69,0.6);
+}
+
+.snql-status[data-state="error"] {
+    background: #dc3545;
+    box-shadow: 0 0 6px rgba(220,53,69,0.6);
+}
+
+.snql-status[data-state="offline"] {
+    background: #6c757d;
+}
+
+@keyframes snql-pulse {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.3); }
 }

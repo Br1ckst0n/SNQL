@@ -32,6 +32,7 @@
         "utils/collections.js",
         "utils/dom.js",
         "utils/escape.js",
+        "services/status.js",
         "services/metadata.js",
         "services/navigation.js",
         "services/history.js",

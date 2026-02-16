@@ -1,6 +1,7 @@
 SNQL.modal = (function () {
 
     let initialized = false;
+    let unsubscribeStatus = null;
 
     function ensureMetadataInit() {
         if (initialized) return;
@@ -40,6 +41,24 @@ SNQL.modal = (function () {
                 const input     = document.getElementById("snql-input");
                 const highlight = document.getElementById("snql-highlight");
                 const label     = document.getElementById("snql-table");
+                const statusEl = document.getElementById("snql-status");
+
+                function renderStatus(state) {
+                    statusEl.dataset.state = state;
+
+                    const titles = {
+                        idle: "Idle",
+                        initializing: "Initializing metadata…",
+                        ready: "Metadata ready",
+                        error: "Metadata error",
+                        offline: "No authentication token"
+                    };
+
+                    statusEl.title = titles[state] || state;
+                }
+
+                renderStatus(SNQL.status.get());
+                unsubscribeStatus  = SNQL.status.subscribe(renderStatus);
 
                 const defaultTable = SNQL.context.getTable?.() || null;
 
@@ -91,6 +110,7 @@ SNQL.modal = (function () {
     function close() {
         document.getElementById("snql-modal")?.remove();
         document.getElementById("snql-overlay")?.remove();
+        unsubscribeStatus?.();
     }
 
     return { open };
