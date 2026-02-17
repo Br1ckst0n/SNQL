@@ -95,6 +95,8 @@ SNQL.sqlParser = (function () {
         if (!whereText) return "";
         whereText = whereText.trim().replace(/^WHERE\s+/i, "");
 
+        whereText = SNQL.macrosRegistry.expandWhereMacros(whereText, ctx);
+
         const tokens = sqlTokenize(whereText);
 
         const conditions = [];
@@ -131,7 +133,7 @@ SNQL.sqlParser = (function () {
                 : "^OR" + next;
         }
 
-        return SNQL.macros.compileWhere(encoded, ctx);
+        return SNQL.macrosRegistry.compileWhere(encoded, ctx);
     }
 
     function parseGroupBy(text) {
@@ -191,7 +193,10 @@ SNQL.sqlParser = (function () {
 
         return {
             table,
-            where: whereText ? parseWhere(whereText, { table }) : "",
+            where: whereText ? parseWhere(whereText, {
+                table,
+                availableFields: SNQL.schema?.getFields?.(table) || []
+            }) : "",
             groupBy:
                 groupIdx !== -1
                     ? parseGroupBy(text.slice(groupIdx + 10, orderIdx === -1 ? end : orderIdx))

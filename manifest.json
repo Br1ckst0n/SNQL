@@ -36,7 +36,8 @@
                 "core/*.js",
                 "services/*.js",
                 "ui/*",
-                "utils/*.js"
+                "utils/*.js",
+                "domain/macros/*.js"
             ],
             "matches": [
                 "https://*.service-now.com/*"

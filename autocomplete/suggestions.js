@@ -26,14 +26,14 @@ SNQL.autocompleteSuggestions = (function () {
                 }
             }
 
-            const macros = SNQL.macros.getForContext(ctx) || [];
+            const macros = SNQL.macrosRegistry.getForContext(ctx) || [];
             for (const m of macros) {
                 suggestions.push({
-                    name: m.display,
-                    label: m.label,
-                    description: m.description,
+                    name: m.name,
+                    label: m.label || m.display || m.name,
+                    // description: m.template,
                     kind: "macro",
-                    insertText: m.display
+                    insertText: m.display || m.name
                 });
             }
 

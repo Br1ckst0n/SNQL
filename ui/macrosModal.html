@@ -1,0 +1,123 @@
+<div id="snql-macros-overlay" class="hidden"></div>
+
+<div id="snql-macros-modal" class="hidden">
+
+    <div class="macros-header">
+        <h3>SNQL Macros</h3>
+        <div class="header-actions">
+            <button id="snql-macros-new">New</button>
+            <button id="snql-macros-close">Close</button>
+        </div>
+    </div>
+
+    <div class="macros-body">
+
+        <div class="macros-list-container">
+            <div class="macro-search">
+                <input type="text" id="snql-macros-search" placeholder="Search macros..." />
+            </div>
+            <ul id="snql-macros-list"></ul>
+        </div>
+
+        <div class="macros-editor hidden" id="snql-macros-editor">
+
+            <div class="editor-header">
+                <div class="editor-title" id="snql-macros-editor-title">
+                    New Macro
+                </div>
+
+                <div class="editor-actions">
+                    <button id="snql-macros-save" class="primary">Save</button>
+                    <button id="snql-macros-delete" class="danger">Delete</button>
+                    <button id="snql-macros-cancel">Cancel</button>
+                </div>
+            </div>
+
+            <div class="editor-content">
+
+                <div class="field">
+                    <label>Name</label>
+                    <input type="text" id="macro-name" />
+                    <div class="hint">Unique internal identifier (used in query).</div>
+                </div>
+
+                <div class="field">
+                    <label>Label</label>
+                    <input type="text" id="macro-label" />
+                    <div class="hint">Human-readable name shown in autocomplete.</div>
+                </div>
+
+                <div class="field">
+                    <label>Display</label>
+                    <input type="text" id="macro-display" />
+                    <div class="hint">Optional preview shown in suggestion list.</div>
+                </div>
+
+                <div class="field">
+                    <label>Macro Type</label>
+                    <div class="macro-scope-toggle">
+                        <label class="switch">
+                            <input type="checkbox" id="macro-scope-toggle">
+                            <span class="slider"></span>
+                        </label>
+                        <span id="macro-scope-label">Value Macro</span>
+                    </div>
+                    <div class="hint">
+                        Value macros replace values. Where macros inject full conditions.
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Template</label>
+                    <textarea id="macro-template"></textarea>
+                    <div class="hint">
+                        SNQL template inserted when macro is selected.
+                    </div>
+                </div>
+
+                <div class="applies-to">
+                    <h4>Applies To</h4>
+                    <div class="hint applies-hint">
+                        All conditions are AND-combined.
+                        Within each field, values are OR-combined.
+                    </div>
+
+                    <div class="field">
+                        <label>Field Types</label>
+                        <input type="text" id="macro-types" placeholder="glide_date, glide_date_time" />
+                    </div>
+
+                    <div class="field">
+                        <label>Reference Tables</label>
+                        <input type="text" id="macro-references" placeholder="sys_user" />
+                    </div>
+
+                    <div class="field">
+                        <label>Operators</label>
+                        <input type="text" id="macro-operators" placeholder="=, !=" />
+                    </div>
+
+                    <div class="field">
+                        <label>Tables</label>
+                        <input type="text" id="macro-tables" placeholder="incident, task" />
+                    </div>
+                </div>
+
+                <div class="requires hidden" id="macro-requires">
+                    <h4>Requires</h4>
+                    <div class="hint">
+                        Fields that must exist on the table for this macro to compile.
+                    </div>
+
+                    <div class="field">
+                        <label>Required Fields</label>
+                        <input type="text" id="macro-requires-fields"
+                            placeholder="assigned_to, created_by" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>

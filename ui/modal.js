@@ -104,6 +104,13 @@ SNQL.modal = (function () {
                         close();
                     }
                 });
+
+
+                document.getElementById("snql-open-macros")
+                    ?.addEventListener("click", () => {
+                        SNQL.macrosModal.open();
+                    });
+
             });
     }
 

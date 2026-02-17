@@ -4,7 +4,8 @@
 
     root.dataset.snqlModalHtml = chrome.runtime.getURL("ui/modal.html");
     root.dataset.snqlModalCss  = chrome.runtime.getURL("ui/modal.css");
-
+    root.dataset.snqlMacrosModalHtml = chrome.runtime.getURL("ui/macrosModal.html");
+    root.dataset.snqlMacrosModalCss  = chrome.runtime.getURL("ui/macrosModal.css");
 
     function inject(files) {
         return files.reduce((p, file) => {
@@ -32,6 +33,9 @@
         "utils/collections.js",
         "utils/dom.js",
         "utils/escape.js",
+        "domain/macros/defaults.js",
+        "domain/macros/registry.js",
+        "domain/macros/store.js",
         "services/status.js",
         "services/metadata.js",
         "services/navigation.js",
@@ -45,13 +49,12 @@
         "ui/historyNav.js",
         "ui/highlighter.js",
         "ui/modal.js",
-        "ui/macros.js",
+        "ui/macrosModal.js",
         "content/tableDetector.js",
         "content/shortcut.js"
     ]);
 
 })();
-
 
 chrome.runtime.onMessage.addListener(msg => {
 
