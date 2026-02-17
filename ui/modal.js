@@ -1,20 +1,28 @@
 SNQL.modal = (function () {
 
-    let initialized = false;
+    /* ================================
+       STATE
+    ================================= */
+
+    let state = {
+        table: null
+    };
+
     let unsubscribeStatus = null;
+    let styleEl = null;
+    let handleGlobalKey = null;
 
-    function ensureMetadataInit() {
-        if (initialized) return;
+    let dom = {};
 
-        SNQL.metadata.init({
-            url: location.origin,
-            token: window.g_ck || window.NOW?.g_ck
-        });
+    const $ = (sel) => dom.root?.querySelector(sel);
+    const $$ = (sel) => [...(dom.root?.querySelectorAll(sel) || [])];
 
-        initialized = true;
-    }
+    /* ================================
+       OPEN / CLOSE
+    ================================= */
 
     function open() {
+
         if (document.getElementById("snql-modal")) return;
 
         ensureMetadataInit();
@@ -24,100 +32,206 @@ SNQL.modal = (function () {
         const modalCss  = root.dataset.snqlModalCss;
 
         if (!modalHtml || !modalCss) {
-            console.error("SNQL assets not found");
+            console.error("SNQL modal assets not found");
             return;
         }
 
         fetch(modalHtml)
             .then(r => r.text())
             .then(html => {
+
                 document.body.insertAdjacentHTML("beforeend", html);
 
-                const link = document.createElement("link");
-                link.rel = "stylesheet";
-                link.href = modalCss;
-                document.head.appendChild(link);
+                styleEl = document.createElement("link");
+                styleEl.rel = "stylesheet";
+                styleEl.href = modalCss;
+                document.head.appendChild(styleEl);
 
-                const input     = document.getElementById("snql-input");
-                const highlight = document.getElementById("snql-highlight");
-                const label     = document.getElementById("snql-table");
-                const statusEl = document.getElementById("snql-status");
+                cacheDom();
+                refreshState();
+                bind();
+                render();
 
-                function renderStatus(state) {
-                    statusEl.dataset.state = state;
+                /* Overlay click closes modal */
+                dom.overlay?.addEventListener("click", close);
 
-                    const titles = {
-                        idle: "Idle",
-                        initializing: "Initializing metadata…",
-                        ready: "Metadata ready",
-                        error: "Metadata error",
-                        offline: "No authentication token"
-                    };
-
-                    statusEl.title = titles[state] || state;
-                }
-
-                renderStatus(SNQL.status.get());
-                unsubscribeStatus  = SNQL.status.subscribe(renderStatus);
-
-                const defaultTable = SNQL.context.getTable?.() || null;
-
-                SNQL.autocompleteView.init(input, defaultTable);
-                SNQL.historyNav.init(input);
-
-                label.textContent =
-                    defaultTable ? `[${defaultTable}]` : `[no table]`;
-
-                function syncHighlight() {
-                    highlight.innerHTML =
-                        SNQL.highlighter.highlight(input.value) + "\n";
-                    highlight.scrollTop = input.scrollTop;
-                }
-
-                input.addEventListener("input", syncHighlight);
-                input.addEventListener("scroll", () => {
-                    highlight.scrollTop = input.scrollTop;
-                });
-
-                syncHighlight();
-                input.focus();
-
-                // --- keyboard handling ---
-                input.addEventListener("keydown", e => {
-                    if (e.key === "Enter") {
-                        e.preventDefault();
-
-                        const query = input.value.trim();
-                        if (query) {
-                            SNQL.history.add(query);
-                        }
-
-                        SNQL.navigation.openList(
-                            query,
-                            defaultTable
-                        );
-
-                        close();
-                    }
-
+                /* Global Escape closes modal */
+                handleGlobalKey = function (e) {
                     if (e.key === "Escape") {
                         close();
                     }
-                });
+                };
 
+                document.addEventListener("keydown", handleGlobalKey);
 
-                document.getElementById("snql-open-macros")
-                    ?.addEventListener("click", () => {
-                        SNQL.macrosModal.open();
-                    });
-
+                dom.input.focus();
             });
     }
 
     function close() {
-        document.getElementById("snql-modal")?.remove();
-        document.getElementById("snql-overlay")?.remove();
+
+        dom.root?.remove();
+        dom.overlay?.remove();
+        styleEl?.remove();
+
         unsubscribeStatus?.();
+
+        if (handleGlobalKey) {
+            document.removeEventListener("keydown", handleGlobalKey);
+            handleGlobalKey = null;
+        }
+
+        styleEl = null;
+        dom = {};
+    }
+
+    /* ================================
+       METADATA
+    ================================= */
+
+    let metadataInitialized = false;
+
+    function ensureMetadataInit() {
+
+        if (metadataInitialized) return;
+
+        SNQL.metadata.init({
+            url: location.origin,
+            token: window.g_ck || window.NOW?.g_ck
+        });
+
+        metadataInitialized = true;
+    }
+
+    /* ================================
+       DOM
+    ================================= */
+
+    function cacheDom() {
+
+        dom.root       = document.getElementById("snql-modal");
+        dom.overlay    = document.getElementById("snql-overlay");
+
+        dom.input      = $("#snql-input");
+        dom.highlight  = $("#snql-highlight");
+        dom.label      = $("#snql-table");
+        dom.status     = $("#snql-status");
+        dom.openMacros = $("#snql-open-macros");
+        dom.run        = $("#snql-run");
+    }
+
+    /* ================================
+       STATE
+    ================================= */
+
+    function refreshState() {
+        state.table = SNQL.context.getTable?.() || null;
+    }
+
+    /* ================================
+       RENDER
+    ================================= */
+
+    function render() {
+
+        dom.label.textContent =
+            state.table ? `[${state.table}]` : `[no table]`;
+
+        renderStatus(SNQL.status.get());
+        unsubscribeStatus = SNQL.status.subscribe(renderStatus);
+
+        syncHighlight();
+    }
+
+    function renderStatus(status) {
+
+        dom.status.dataset.state = status;
+
+        const titles = {
+            idle: "Idle",
+            initializing: "Initializing metadata…",
+            ready: "Metadata ready",
+            error: "Metadata error",
+            offline: "No authentication token"
+        };
+
+        dom.status.title = titles[status] || status;
+    }
+
+    function syncHighlight() {
+
+        dom.highlight.innerHTML =
+            SNQL.highlighter.highlight(dom.input.value) + "\n";
+
+        dom.highlight.scrollTop = dom.input.scrollTop;
+    }
+
+    /* ================================
+       RUN LOGIC
+    ================================= */
+
+    function runQuery({ newTab = false } = {}) {
+
+        const query = dom.input.value.trim();
+        if (!query) return;
+
+        SNQL.history.add(query);
+
+        const url = SNQL.navigation.buildUrl(query, state.table);
+        if (!url) return;
+
+        if (newTab) {
+            window.postMessage({
+                type: "SNQL_OPEN_TAB",
+                url
+            }, "*");
+        } else {
+            window.top.location.href = url;
+        }
+
+        close();
+    }
+
+    /* ================================
+       BIND
+    ================================= */
+
+    function bind() {
+
+        SNQL.autocompleteView.init(dom.input, state.table);
+        SNQL.historyNav.init(dom.input);
+
+        dom.input.addEventListener("input", syncHighlight);
+
+        dom.input.addEventListener("scroll", () => {
+            dom.highlight.scrollTop = dom.input.scrollTop;
+        });
+
+        dom.input.addEventListener("keydown", onKeyDown);
+
+        dom.openMacros?.addEventListener("click", () => {
+            SNQL.macrosModal.open();
+        });
+
+        dom.run?.addEventListener("click", (e) => {
+            runQuery({
+                newTab: e.shiftKey || e.ctrlKey || e.metaKey
+            });
+        });
+    }
+
+    function onKeyDown(e) {
+
+        if (e.key === "Enter") {
+            e.preventDefault();
+            runQuery({
+                newTab: e.shiftKey || e.ctrlKey || e.metaKey
+            });
+        }
+
+        if (e.key === "Escape") {
+            close();
+        }
     }
 
     return { open };

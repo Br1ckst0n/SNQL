@@ -56,6 +56,17 @@
 
 })();
 
+window.addEventListener("message", (event) => {
+
+    if (event.source !== window) return;
+    if (!event.data || event.data.type !== "SNQL_OPEN_TAB") return;
+
+    chrome.runtime.sendMessage({
+        type: "SNQL_CREATE_TAB",
+        url: event.data.url
+    });
+});
+
 chrome.runtime.onMessage.addListener(msg => {
 
     if (msg.type !== "SNQL_OPEN_MODAL") return;

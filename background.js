@@ -22,3 +22,21 @@ chrome.commands.onCommand.addListener(command => {
         );
     });
 });
+
+chrome.runtime.onMessage.addListener((msg, sender) => {
+
+    if (msg.type !== "SNQL_CREATE_TAB") return;
+
+    console.log("[SNQL] create tab request:", msg);
+
+    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+
+        if (!tabs?.length) return;
+
+        chrome.tabs.create({
+            url: msg.url,
+            active: true,
+            index: tabs[0].index + 1
+        });
+    });
+});
